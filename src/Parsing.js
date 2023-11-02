@@ -1,12 +1,7 @@
-const fs = require('fs');
-
-function main(){
-    const filePath = "./data/FHIR_Reference.json"
-    const fhirJsonString = readFileAsString(filePath);
-    //console.log(fhirJsonString)
+function FHIR_to_summary(fhirJsonString){
     const fhirData = parseFhirJson(fhirJsonString);
     const summary = summarizePatient(fhirData);
-    console.log(summary);
+    return summary;
 }
 
 function parseFhirJson(fhirJsonString) {
@@ -59,19 +54,17 @@ function summarizePatient(fhirData) {
     }).join(', ') : 'None';
 
     return `
-    Patient Summary:
-    Name: ${name}
-    Date of Birth: ${dob}
-    Gender: ${gender}
-    Address: ${address}
-    Family Connections: ${familyConnections}
-    Contact Info: ${contactInfo}
+    Patient Summary:\n
+    Name: ${name}\n
+    Date of Birth: ${dob}\n
+    Gender: ${gender}\n
+    Address: ${address}\n
+    Family Connections: ${familyConnections}\n
+    Contact Info: ${contactInfo}\n
     `;
 }
 
-
-
-
+/*
 function readFileAsString(filePath) {
     try {
         const data = fs.readFileSync(filePath, 'utf8');
@@ -80,5 +73,6 @@ function readFileAsString(filePath) {
         return `Error reading file: ${error.message}`;
     }
 }
+*/
 
-main();
+export default FHIR_to_summary;
