@@ -54,13 +54,13 @@ function summarizePatient(fhirData) {
     }).join(', ') : 'None';
 
     return `
-    Patient Summary:\n
-    Name: ${name}\n
-    Date of Birth: ${dob}\n
-    Gender: ${gender}\n
-    Address: ${address}\n
-    Family Connections: ${familyConnections}\n
-    Contact Info: ${contactInfo}\n
+    Patient Summary:
+    Name: ${name}
+    Date of Birth: ${dob}
+    Gender: ${gender}
+    Address: ${address}
+    Family Connections: ${familyConnections}
+    Contact Info: ${contactInfo}
     `;
 }
 

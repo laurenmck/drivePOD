@@ -69,11 +69,12 @@ function App() {
     backgroundColor: 'transparent',
     border: 'none',
     outline: 'none',
-    width: '50%',
+    width: '60vw',
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
     margin: 'auto',
+    whiteSpace: 'pre-line'
   };
 
 const buttonStyle = {
