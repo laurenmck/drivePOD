@@ -6,7 +6,7 @@ package-lock.json
 *.log
 
 # Runtime
-.env
+google.json
 
 # OS
 .DS_Store

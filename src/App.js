@@ -1,34 +1,28 @@
 import './App.css';
 import { gapi } from 'gapi-script';
-import { useEffect, useState } from 'react';
-import Login from './components/login';
-import Logout from './components/logout';
-
+import { useState } from 'react';
+// import Login from './components/login';
+// import Logout from './components/logout';
+import useGoogle from "./auth/useGoogle";
 import FHIR_to_summary from './Parsing';
-
-const clientId = '501816916441-50t2r4ud6jsla2bu3a4ggtdg8vbumocm.apps.googleusercontent.com';
+// import objectToFormData from './Parsing'
 
 function App() {
-
-  useEffect(() => {
-    function start(){
-      gapi.client.init({
-        clientId: {clientId},
-        scope: ""
-      })
-    };
-    gapi.load('client:auth2', start);
-
-  });
+  //for Auth
+  const { token, authorize, revoke } = useGoogle();
 
   const [summary, setSummary] = useState('Nothing Here Yet');
   const [loadUrl, setLoadUrl] = useState('http://orenkohavi.github.io/FHIRData/FHIR_Reference');
+  const [file, setFile] = useState('');
 
+  
   const handleImportClick = async () => {
     try {
       const response = await fetch(loadUrl);
       const data = await response.text(); // assuming the URL returns text
+    
       const summaryText = FHIR_to_summary(data);
+      setFile(data);
       setSummary(summaryText);
     } catch (error) {
       console.error('Error fetching or processing data:', error);
@@ -36,22 +30,22 @@ function App() {
     }
   };
 
-  const handleLoadClick = async () => {
+  const handleLoadClick = async (e) => {
     try {
-      //TODO: get data from google drive
-      const data = {
-        "resourceType" : "Patient",
-        "id" : "example",
-        "active" : true,
-        "name" : [{
-          "use" : "official",
-          "family" : "ExampleFace",
-          "given" : ["Example"]
-        }],
-      }
-      const summaryText = FHIR_to_summary(data);
-      setSummary(summaryText);
-    } catch (error) {
+      //TODO: get upload loaded data to google drive
+      var request = window.gapi.client.request({
+        'path': 'https://www.googleapis.com/upload/drive/v3/files',
+        'method': 'POST',
+        'params': {'uploadType': 'media'}, //TODO: edit this to a multi part upload to add name/metadata
+        'headers': {
+          'Authorization': "Bearer " + token
+        },
+        'body': file});
+    request.execute(function(file) {
+      console.log("file uploaded to drive", file);
+      setSummary("File Uploaded to Drive");
+    });
+    } catch (error){
       console.error('Error fetching or processing data:', error);
       setSummary('Error loading summary.');
     }
@@ -90,9 +84,12 @@ const buttonStyle = {
       <header className="App-header">
         <div>
           <div id='GoogleLoginDiv'>
-          <Login/>
+          <button onClick={token ? revoke : authorize} type="button" style={buttonStyle}>
+            {token ? "Log-Out" : "authorize"}
+          </button>
+          {/* <Login/>
           <br/>
-          <Logout/>
+          <Logout/> */}
           </div>
           <br></br>
           <div style={{ textAlign: 'center' }}>
